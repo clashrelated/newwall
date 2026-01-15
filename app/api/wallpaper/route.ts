@@ -50,9 +50,27 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Randomly select one image
-    const randomIndex = Math.floor(Math.random() * imageFiles.length);
-    const selectedImage = imageFiles[randomIndex];
+    // Sort files to ensure consistent ordering
+    const sortedFiles = imageFiles.sort();
+
+    // Use date-based selection for daily consistency
+    // This ensures the same image is shown all day, but changes daily
+    const today = new Date();
+    const dateString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    
+    // Create a simple hash from the date string and category
+    // This gives us a deterministic "random" selection per day
+    let hash = 0;
+    const seed = `${dateString}-${category}`;
+    for (let i = 0; i < seed.length; i++) {
+      const char = seed.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    
+    // Use absolute value and modulo to get index
+    const dailyIndex = Math.abs(hash) % sortedFiles.length;
+    const selectedImage = sortedFiles[dailyIndex];
 
     // Construct the full URL
     // Use the request origin, or fallback to environment variable or default
