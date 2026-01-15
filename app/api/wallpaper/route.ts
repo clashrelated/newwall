@@ -1,9 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 
 // Valid categories that exist in /public/wallpapers
 const VALID_CATEGORIES = ["nature", "abstract", "minimal", "ai", "cars"];
+
+// Static list of available images per category
+// This needs to be maintained when you add new images
+const WALLPAPERS: Record<string, string[]> = {
+  nature: [
+    "nature-001.png",
+    "nature-002.png",
+    "nature-003.png",
+    "nature-004.png",
+    "nature-005.png",
+    "nature-006.png",
+    "nature-007.png",
+    "nature-008.png",
+    "nature-009.png",
+    "nature-010.png",
+  ],
+  abstract: [],
+  minimal: [],
+  ai: [],
+  cars: [],
+};
 
 // Handle CORS preflight requests
 export async function OPTIONS(request: NextRequest) {
@@ -31,40 +50,26 @@ export async function GET(request: NextRequest) {
 
     category = category.toLowerCase();
 
-    // Path to the category folder in public
-    const wallpapersDir = path.join(process.cwd(), "public", "wallpapers", category);
-
-    // Check if directory exists
-    if (!fs.existsSync(wallpapersDir)) {
-      // Fallback to minimal if category folder doesn't exist
-      const fallbackDir = path.join(process.cwd(), "public", "wallpapers", "minimal");
-      if (!fs.existsSync(fallbackDir)) {
-        return NextResponse.json(
-          { error: "No wallpapers available" },
-          { status: 404 }
-        );
-      }
+    // Get available images for this category
+    let availableImages = WALLPAPERS[category] || [];
+    
+    // Fallback to minimal if category has no images
+    if (availableImages.length === 0) {
       category = "minimal";
+      availableImages = WALLPAPERS[category] || [];
     }
 
-    // Read all files in the category directory
-    const files = fs.readdirSync(wallpapersDir);
-
-    // Filter for image files
-    const imageFiles = files.filter((file) => {
-      const ext = path.extname(file).toLowerCase();
-      return [".jpg", ".jpeg", ".png", ".webp"].includes(ext);
-    });
-
-    if (imageFiles.length === 0) {
+    if (availableImages.length === 0) {
       return NextResponse.json(
-        { error: "No images found in category" },
-        { status: 404 }
+        { error: "No wallpapers available" },
+        { 
+          status: 404,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+        }
       );
     }
-
-    // Sort files to ensure consistent ordering
-    const sortedFiles = imageFiles.sort();
 
     // Use date-based selection for daily consistency
     // This ensures the same image is shown all day, but changes daily
@@ -82,41 +87,27 @@ export async function GET(request: NextRequest) {
     }
     
     // Use absolute value and modulo to get index
-    const dailyIndex = Math.abs(hash) % sortedFiles.length;
-    const selectedImage = sortedFiles[dailyIndex];
+    const dailyIndex = Math.abs(hash) % availableImages.length;
+    const selectedImage = availableImages[dailyIndex];
 
-    // Read the image file
-    const imagePath = path.join(wallpapersDir, selectedImage);
-    const imageBuffer = fs.readFileSync(imagePath);
+    // Construct the static file URL
+    const origin = request.headers.get("origin") || request.nextUrl.origin;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || origin || "https://newwall.app";
+    const imageUrl = `${baseUrl}/wallpapers/${category}/${selectedImage}`;
 
-    // Determine content type based on file extension
-    const ext = path.extname(selectedImage).toLowerCase();
-    let contentType = "image/png";
-    if (ext === ".jpg" || ext === ".jpeg") {
-      contentType = "image/jpeg";
-    } else if (ext === ".webp") {
-      contentType = "image/webp";
-    }
-
-    // Return the image directly with appropriate headers
-    return new NextResponse(imageBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": contentType,
-        "Cache-Control": "public, max-age=3600, s-maxage=3600", // Cache for 1 hour
-        "Content-Disposition": `inline; filename="${selectedImage}"`,
-        // CORS headers for iOS Shortcuts
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type",
-        "Access-Control-Max-Age": "86400",
-      },
-    });
+    // Redirect to the static file instead of reading it
+    // This works on both localhost and Vercel
+    return NextResponse.redirect(imageUrl, 302);
   } catch (error) {
     console.error("Error fetching wallpaper:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
     );
   }
 }
