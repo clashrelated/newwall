@@ -149,12 +149,18 @@ export default function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="px-4 py-8 border-t border-gray-800">
-          <div className="max-w-4xl mx-auto text-center">
-            <p className="text-sm text-gray-400 leading-relaxed">
-              NewWall is a minimalist wallpaper project focused on mindful living, built for people who want a calm digital environment.
-            </p>
-          </div>
+        <footer className="border-t border-white/5 py-8 text-center">
+          <p className="text-sm text-[#444444]">
+            Made by{" "}
+            <a
+              href="https://www.linkedin.com/in/bhabishya/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white transition-colors"
+            >
+              @bhabishya
+            </a>
+          </p>
         </footer>
       </main>
     </>

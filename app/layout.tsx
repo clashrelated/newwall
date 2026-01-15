@@ -69,6 +69,10 @@ export const metadata: Metadata = {
   verification: {
     google: "ahOlv9-GBTmJOSkzgkVZg2z_b1NuIUTxJrwEpDgLdks",
   },
+  icons: {
+    icon: "/newwall logo.png",
+    apple: "/newwall logo.png",
+  },
 };
 
 export default function RootLayout({
