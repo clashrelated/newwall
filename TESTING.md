@@ -25,14 +25,9 @@ The API endpoint is `/api/wallpaper` (singular, not plural).
 
 ## Expected Response
 
-The API returns JSON in this format:
+The API **directly serves the image file**. When you visit the endpoint, you'll see the image displayed directly in your browser, just like visiting an image URL.
 
-```json
-{
-  "category": "nature",
-  "imageUrl": "https://newwall.app/wallpapers/nature/nature-001.png"
-}
-```
+The response is the actual image file (PNG, JPG, or WEBP) with appropriate content-type headers.
 
 ## Daily Image Selection
 
@@ -60,16 +55,16 @@ The API uses a date-based selection algorithm:
    http://localhost:3000/api/wallpaper?category=nature
    ```
 
-3. Check the response - it should return a JSON object with `category` and `imageUrl`
+3. Check the response - you should see the image displayed directly in your browser
 
 ## Testing Daily Changes
 
 To test that the image changes daily:
 
-1. Call the API today and note the `imageUrl`
+1. Visit the API endpoint today and note which image is displayed
 2. Manually change your system date to tomorrow
-3. Call the API again - it should return a different `imageUrl`
-4. Change back to today - it should return the original image
+3. Visit the API endpoint again - it should show a different image
+4. Change back to today - it should show the original image
 
 ## Troubleshooting
 

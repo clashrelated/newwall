@@ -72,15 +72,27 @@ export async function GET(request: NextRequest) {
     const dailyIndex = Math.abs(hash) % sortedFiles.length;
     const selectedImage = sortedFiles[dailyIndex];
 
-    // Construct the full URL
-    // Use the request origin, or fallback to environment variable or default
-    const origin = request.headers.get("origin") || request.nextUrl.origin;
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || origin || "https://newwall.app";
-    const imageUrl = `${baseUrl}/wallpapers/${category}/${selectedImage}`;
+    // Read the image file
+    const imagePath = path.join(wallpapersDir, selectedImage);
+    const imageBuffer = fs.readFileSync(imagePath);
 
-    return NextResponse.json({
-      category: category,
-      imageUrl: imageUrl,
+    // Determine content type based on file extension
+    const ext = path.extname(selectedImage).toLowerCase();
+    let contentType = "image/png";
+    if (ext === ".jpg" || ext === ".jpeg") {
+      contentType = "image/jpeg";
+    } else if (ext === ".webp") {
+      contentType = "image/webp";
+    }
+
+    // Return the image directly with appropriate headers
+    return new NextResponse(imageBuffer, {
+      status: 200,
+      headers: {
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=3600, s-maxage=3600", // Cache for 1 hour
+        "Content-Disposition": `inline; filename="${selectedImage}"`,
+      },
     });
   } catch (error) {
     console.error("Error fetching wallpaper:", error);
