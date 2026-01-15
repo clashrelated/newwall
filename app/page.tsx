@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { useState } from "react";
 import Link from "next/link";
 import InstallModal from "./components/InstallModal";
 

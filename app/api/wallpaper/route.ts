@@ -5,6 +5,19 @@ import path from "path";
 // Valid categories that exist in /public/wallpapers
 const VALID_CATEGORIES = ["nature", "abstract", "minimal", "ai", "cars"];
 
+// Handle CORS preflight requests
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Max-Age": "86400",
+    },
+  });
+}
+
 export async function GET(request: NextRequest) {
   try {
     // Get category from query parameter, default to "minimal"
@@ -92,6 +105,11 @@ export async function GET(request: NextRequest) {
         "Content-Type": contentType,
         "Cache-Control": "public, max-age=3600, s-maxage=3600", // Cache for 1 hour
         "Content-Disposition": `inline; filename="${selectedImage}"`,
+        // CORS headers for iOS Shortcuts
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Max-Age": "86400",
       },
     });
   } catch (error) {
