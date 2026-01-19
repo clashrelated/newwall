@@ -25,10 +25,38 @@ const WALLPAPERS: Record<string, string[]> = {
     "cars-004.jpg",
     "cars-005.jpg",
   ],
-  animals: [],
-  space: [],
-  minimal: [],
-  motivation: [],
+  animals: [
+    "animals-001.jpg",
+    "animals-002.jpg",
+    "animals-003.jpg",
+    "animals-004.jpg",
+    "animals-005.jpg",
+  ],
+  space: [
+    "space-001.jpg",
+    "space-002.jpg",
+    "space-003.jpg",
+    "space-004.jpeg",
+    "space-005.jpeg",
+
+  ],
+  minimal: [
+    "minimal-001.jpg",
+    "minimal-002.jpg",
+    "minimal-003.jpg",
+    "minimal-004.jpg",
+    "minimal-005.jpg",
+    "minimal-006.jpg",
+    "minimal-007.jpg",
+    "minimal-008.jpg",
+  ],
+  motivation: [
+    "motivation-001.jpg",
+    "motivation-002.jpg",
+    "motivation-003.jpg",
+    "motivation-004.jpg",
+    "motivation-005.jpg",
+  ],
 };
 
 // Handle CORS preflight requests
