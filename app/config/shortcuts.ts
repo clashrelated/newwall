@@ -12,10 +12,11 @@
 
 export const shortcutLinks = {
   nature: "https://www.icloud.com/shortcuts/eb8db03046924ea3a53d10b41ab8feb3",
-  abstract: "https://www.icloud.com/shortcuts/PLACEHOLDER_ABSTRACT_LINK",
-  minimal: "https://www.icloud.com/shortcuts/PLACEHOLDER_MINIMAL_LINK",
-  ai: "https://www.icloud.com/shortcuts/PLACEHOLDER_AI_LINK",
   cars: "https://www.icloud.com/shortcuts/PLACEHOLDER_CARS_LINK",
+  animals: "https://www.icloud.com/shortcuts/PLACEHOLDER_ANIMALS_LINK",
+  space: "https://www.icloud.com/shortcuts/PLACEHOLDER_SPACE_LINK",
+  minimal: "https://www.icloud.com/shortcuts/PLACEHOLDER_MINIMAL_LINK",
+  motivation: "https://www.icloud.com/shortcuts/PLACEHOLDER_MOTIVATION_LINK",
 } as const;
 
 export type Category = keyof typeof shortcutLinks;

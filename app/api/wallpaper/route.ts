@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // Valid categories that exist in /public/wallpapers
-const VALID_CATEGORIES = ["nature", "abstract", "minimal", "ai", "cars"];
+const VALID_CATEGORIES = ["nature", "cars", "animals", "space", "minimal", "motivation"];
 
 // Static list of available images per category
 // This needs to be maintained when you add new images
@@ -18,10 +18,17 @@ const WALLPAPERS: Record<string, string[]> = {
     "nature-009.png",
     "nature-010.png",
   ],
-  abstract: [],
+  cars: [
+    "cars-001.png",
+    "cars-002.png",
+    "cars-003.png",
+    "cars-004.png",
+    "cars-005.png",
+  ],
+  animals: [],
+  space: [],
   minimal: [],
-  ai: [],
-  cars: [],
+  motivation: [],
 };
 
 // Handle CORS preflight requests
@@ -53,9 +60,9 @@ export async function GET(request: NextRequest) {
     // Get available images for this category
     let availableImages = WALLPAPERS[category] || [];
     
-    // Fallback to minimal if category has no images
+    // Fallback to nature if category has no images (nature has images)
     if (availableImages.length === 0) {
-      category = "minimal";
+      category = "nature";
       availableImages = WALLPAPERS[category] || [];
     }
 

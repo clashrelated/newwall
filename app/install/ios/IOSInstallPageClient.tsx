@@ -9,10 +9,11 @@ export default function IOSInstallPageClient() {
 
   const categories: { key: Category; label: string }[] = [
     { key: "nature", label: "Nature" },
-    { key: "abstract", label: "Abstract" },
-    { key: "minimal", label: "Minimal" },
-    { key: "ai", label: "AI" },
     { key: "cars", label: "Cars" },
+    { key: "animals", label: "Animals" },
+    { key: "space", label: "Space" },
+    { key: "minimal", label: "Minimal" },
+    { key: "motivation", label: "Motivation" },
   ];
 
   const handleOpenShortcut = () => {
