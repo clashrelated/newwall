@@ -172,6 +172,21 @@ export default function IOSInstallPageClient() {
             Your wallpaper will now update automatically every day.
           </p>
         </section>
+
+        {/* Footer Attribution */}
+        <footer className="border-t border-white/5 py-8 mt-8 md:mt-12 text-center">
+          <p className="text-sm text-[#444444]">
+            Made by{" "}
+            <a
+              href="https://www.linkedin.com/in/bhabishya/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white transition-colors"
+            >
+              @bhabishya
+            </a>
+          </p>
+        </footer>
       </div>
     </main>
   );
