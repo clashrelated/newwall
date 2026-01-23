@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 
 export default function GoalInstallPageClient() {
@@ -17,6 +17,30 @@ export default function GoalInstallPageClient() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
 
+  // Generate date options
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, i) => currentYear + i);
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month, 0).getDate();
+  };
+  
+  const startDays = useMemo(() => {
+    if (startYear && startMonth) {
+      const maxDays = getDaysInMonth(parseInt(startYear), parseInt(startMonth));
+      return Array.from({ length: maxDays }, (_, i) => i + 1);
+    }
+    return Array.from({ length: 31 }, (_, i) => i + 1);
+  }, [startYear, startMonth]);
+
+  const endDays = useMemo(() => {
+    if (endYear && endMonth) {
+      const maxDays = getDaysInMonth(parseInt(endYear), parseInt(endMonth));
+      return Array.from({ length: maxDays }, (_, i) => i + 1);
+    }
+    return Array.from({ length: 31 }, (_, i) => i + 1);
+  }, [endYear, endMonth]);
+
   // Set default dates (today and 90 days from now)
   useEffect(() => {
     const today = new Date();
@@ -30,6 +54,25 @@ export default function GoalInstallPageClient() {
     setEndMonth(String(future.getMonth() + 1).padStart(2, "0"));
     setEndDay(String(future.getDate()).padStart(2, "0"));
   }, []);
+
+  // Adjust day if invalid for selected month/year
+  useEffect(() => {
+    if (startYear && startMonth && startDay) {
+      const maxDays = getDaysInMonth(parseInt(startYear), parseInt(startMonth));
+      if (parseInt(startDay) > maxDays) {
+        setStartDay(String(maxDays).padStart(2, "0"));
+      }
+    }
+  }, [startYear, startMonth]);
+
+  useEffect(() => {
+    if (endYear && endMonth && endDay) {
+      const maxDays = getDaysInMonth(parseInt(endYear), parseInt(endMonth));
+      if (parseInt(endDay) > maxDays) {
+        setEndDay(String(maxDays).padStart(2, "0"));
+      }
+    }
+  }, [endYear, endMonth]);
 
   // Generate URL whenever form changes
   useEffect(() => {
@@ -147,7 +190,7 @@ export default function GoalInstallPageClient() {
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Run a Marathon"
+                placeholder="e.g. Better grades"
                 className="w-full px-4 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors"
               />
               {errors.title && (
@@ -214,27 +257,60 @@ export default function GoalInstallPageClient() {
                 Start Date
               </label>
               <div className="grid grid-cols-3 gap-2.5">
-                <input
-                  type="text"
+                <select
                   value={startYear}
                   onChange={(e) => setStartYear(e.target.value)}
-                  placeholder="Year"
-                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-center"
-                />
-                <input
-                  type="text"
+                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-white transition-colors text-center appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    paddingRight: '36px',
+                  }}
+                >
+                  <option value="" disabled>Year</option>
+                  {years.map((year) => (
+                    <option key={year} value={year.toString()}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+                <select
                   value={startMonth}
                   onChange={(e) => setStartMonth(e.target.value)}
-                  placeholder="Month"
-                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-center"
-                />
-                <input
-                  type="text"
+                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-white transition-colors text-center appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    paddingRight: '36px',
+                  }}
+                >
+                  <option value="" disabled>Month</option>
+                  {months.map((month) => (
+                    <option key={month} value={String(month).padStart(2, "0")}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+                <select
                   value={startDay}
                   onChange={(e) => setStartDay(e.target.value)}
-                  placeholder="Day"
-                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-center"
-                />
+                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-white transition-colors text-center appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    paddingRight: '36px',
+                  }}
+                >
+                  <option value="" disabled>Day</option>
+                  {startDays.map((day) => (
+                    <option key={day} value={String(day).padStart(2, "0")}>
+                      {day}
+                    </option>
+                  ))}
+                </select>
               </div>
               {errors.startDate && (
                 <p className="text-red-400 text-sm mt-2">{errors.startDate}</p>
@@ -247,27 +323,60 @@ export default function GoalInstallPageClient() {
                 End Date (Deadline)
               </label>
               <div className="grid grid-cols-3 gap-2.5">
-                <input
-                  type="text"
+                <select
                   value={endYear}
                   onChange={(e) => setEndYear(e.target.value)}
-                  placeholder="Year"
-                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-center"
-                />
-                <input
-                  type="text"
+                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-white transition-colors text-center appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    paddingRight: '36px',
+                  }}
+                >
+                  <option value="" disabled>Year</option>
+                  {years.map((year) => (
+                    <option key={year} value={year.toString()}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+                <select
                   value={endMonth}
                   onChange={(e) => setEndMonth(e.target.value)}
-                  placeholder="Month"
-                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-center"
-                />
-                <input
-                  type="text"
+                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-white transition-colors text-center appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    paddingRight: '36px',
+                  }}
+                >
+                  <option value="" disabled>Month</option>
+                  {months.map((month) => (
+                    <option key={month} value={String(month).padStart(2, "0")}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+                <select
                   value={endDay}
                   onChange={(e) => setEndDay(e.target.value)}
-                  placeholder="Day"
-                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-white transition-colors text-center"
-                />
+                  className="px-3 py-3 min-h-[44px] bg-[#0a0a0a] border border-gray-700 rounded-xl text-white focus:outline-none focus:border-white transition-colors text-center appearance-none cursor-pointer"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'right 12px center',
+                    paddingRight: '36px',
+                  }}
+                >
+                  <option value="" disabled>Day</option>
+                  {endDays.map((day) => (
+                    <option key={day} value={String(day).padStart(2, "0")}>
+                      {day}
+                    </option>
+                  ))}
+                </select>
               </div>
               {errors.endDate && (
                 <p className="text-red-400 text-sm mt-2">{errors.endDate}</p>
@@ -358,12 +467,20 @@ export default function GoalInstallPageClient() {
                   6
                 </div>
                 <p className="text-sm md:text-base text-gray-400 leading-relaxed pt-1">
-                  Tap <strong className="text-white">Add Action</strong>, search for <strong className="text-white">&quot;Get Contents of URL&quot;</strong>, and paste the URL you copied.
+                  Create a new shortcut.
                 </p>
               </div>
               <div className="flex items-start gap-3 md:gap-4">
                 <div className="flex-shrink-0 w-8 h-8 bg-white text-black rounded-full flex items-center justify-center font-bold text-sm">
                   7
+                </div>
+                <p className="text-sm md:text-base text-gray-400 leading-relaxed pt-1">
+                  Tap <strong className="text-white">Add Action</strong>, search for <strong className="text-white">&quot;Get Contents of URL&quot;</strong>, and paste the URL you copied.
+                </p>
+              </div>
+              <div className="flex items-start gap-3 md:gap-4">
+                <div className="flex-shrink-0 w-8 h-8 bg-white text-black rounded-full flex items-center justify-center font-bold text-sm">
+                  8
                 </div>
                 <p className="text-sm md:text-base text-gray-400 leading-relaxed pt-1">
                   Add another action: <strong className="text-white">&quot;Set Wallpaper&quot;</strong>, and use the result from the previous action.
