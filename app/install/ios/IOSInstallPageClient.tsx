@@ -163,6 +163,24 @@ export default function IOSInstallPageClient() {
           </section>
         </div>
 
+        {/* Goal Wallpapers Link */}
+        <section className="mt-8 md:mt-12 p-4 md:p-6 bg-[#1a1a1a] rounded-2xl border border-gray-800">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3 text-center">
+            Prefer goal-based wallpapers?
+          </h2>
+          <p className="text-sm md:text-base text-gray-400 text-center leading-relaxed mb-4">
+            Create a wallpaper that visualizes your progress toward a goal. Perfect for tracking milestones and staying motivated.
+          </p>
+          <div className="text-center">
+            <Link
+              href="/install/goal"
+              className="inline-block px-6 py-3 min-h-[44px] bg-white text-black rounded-xl font-semibold text-base hover:bg-gray-100 transition-colors"
+            >
+              Set Up Goal Wallpaper →
+            </Link>
+          </div>
+        </section>
+
         {/* Footer Note */}
         <section className="mt-8 md:mt-12 p-4 md:p-6 bg-[#1a1a1a] rounded-2xl border border-gray-800">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center">

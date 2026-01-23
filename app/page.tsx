@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import InstallModal from "./components/InstallModal";
+import HomePageClient from "./components/HomePageClient";
 
 export const metadata: Metadata = {
   title: "Minimalist Wallpapers That Change Every Day",
   description:
-    "Automatically update your iPhone wallpaper daily with calm, minimalist, and AI-generated designs. Powered by iOS Shortcuts. No app required.",
+    "Automatically update your iPhone wallpaper daily with calm, minimalist, and AI-generated designs. Choose from daily category wallpapers or goal-based progress trackers. Powered by iOS Shortcuts. No app required.",
 };
 
 export default function Home() {
@@ -33,10 +33,8 @@ export default function Home() {
               <span className="block md:inline"> Powered by iOS Shortcuts. No app required.</span>
             </p>
 
-            {/* CTA Button */}
-            <div className="pt-2 md:pt-4">
-              <InstallModal />
-            </div>
+            {/* Mode Switch */}
+            <HomePageClient />
           </div>
         </section>
 
